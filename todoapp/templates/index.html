@@ -1,0 +1,25 @@
+<html>
+
+<head>
+    <title>Todo App</title>
+</head>
+
+<body>
+    <div>Static html:</div>
+    <ul>
+        <!-- Want to connect these to database -->
+        <li>Todo 1</li>
+        <li>Todo 2</li>
+        <li>Todo 3</li>
+        <li>Todo 4</li>
+    </ul>
+    <div>Using data from the Server:</div>
+    <ul>
+        <!-- Instead, use the Jinja for loop -->
+        {% for d in data %}
+        <li>{{ d.description }}</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
