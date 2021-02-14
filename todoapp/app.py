@@ -45,7 +45,18 @@ def create_todo():
     else:
         return jsonify(body)
 
-
+@app.route('/todos/<todo_id>/set-completed', methods=['POST'])
+def set_completed_todo(todo_id):
+    try:
+        completed = request.get_json()['completed']
+        todo = Todo.query.get(todo_id)
+        todo.completed = completed
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    return redirect(url_for('index'))
 
 #Form submission
 # @app.route('/todos/create', methods=['POST'])
@@ -62,7 +73,7 @@ def create_todo():
 
 def index(): 
     #By default, Flask looks for templates in project directory called "templates"
-    return render_template('index.html', data = Todo.query.all())
+    return render_template('index.html', data = Todo.query.order_by('id').all())
     # Instead of data returned manually, use the Todo object to query the data
     # data=[{'description': 'Todo 1'}, {'description': 'Todo 2'}, {'description': 'Todo 3'}, {'description': 'Todo 4'}])
 if __name__ == '__main__':
