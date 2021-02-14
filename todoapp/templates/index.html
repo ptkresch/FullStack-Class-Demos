@@ -5,37 +5,52 @@
 </head>
 
 <body>
-    <div>Static html:</div>
-    <ul>
-        <form id="form">
-            <!-- using form submit -->
-            <!-- <form method="POST" action="/todos/create"></form> -->
-            <input id="description" type="text" name="description" />
-            <input type="submit" value="Create" />
-        </form>
-        <!-- Want to connect these to database -->
-        <li>Todo 1</li>
+    <form id="form">
+        <!-- using form submit -->
+        <!-- <form method="POST" action="/todos/create"></form> -->
+        <input id="description" type="text" name="description" />
+        <input type="submit" value="Create" />
+    </form>
+    <!-- Want to connect these to database -->
+    <!-- <li>Todo 1</li>
         <li>Todo 2</li>
         <li>Todo 3</li>
-        <li>Todo 4</li>
-    </ul>
-    <div>Using data from the Server:</div>
+        <li>Todo 4</li> -->
+    <!-- </ul> -->
+    <!-- <div>Using data from the Server:</div> -->
     <ul id="todos">
         <!-- Instead, use the Jinja for loop -->
         {% for d in data %}
-        <li><input class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %}
-                data-id="{{ d.id }}" /> {{ d.description
-            }}</li>
+        <li>
+            <input class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %}
+                data-id="{{ d.id }}" />
+            {{ d.description }}
+            <button class="delete" data-id="{{ d.id }}">&cross;</button>
+        </li>
+
         {% endfor %}
     </ul>
     <script>
-        const checkboxes = document.querySelectorAll('.check-completed');
+        const deletebuttons = document.querySelectorAll('.delete');
+        for (let i = 0; i < deletebuttons.length; i++) {
+            const deletebutton = deletebuttons[i];
+            deletebutton.onclick = function (e) {
+                console.log('delete button event: ', e);
+                const todoId = e.target.dataset['id'];
+                fetch('todos/' + todoId + '/delete-todo', {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+            }
+        }
 
+        const checkboxes = document.querySelectorAll('.check-completed');
         for (let i = 0; i < checkboxes.length; i++) {
             const checkbox = checkboxes[i];
             checkbox.onchange = function (e) {
                 console.log('events: ', e);
-                // TODO: Add POST add backend route for set-completed
                 const newCompleted = e.target.checked;
                 const todoId = e.target.dataset['id'];
                 fetch('todos/' + todoId + '/set-completed', {
@@ -65,6 +80,7 @@
             }).then(function (response) {
                 return response.json();
             }).then(function (jsonResponse) {
+                // TODO: Add checkbox, delete button to form submit
                 var li = document.createElement('li');
                 li.innerHTML = jsonResponse['description'];
                 console.log(jsonResponse);
