@@ -38,10 +38,7 @@
                 console.log('delete button event: ', e);
                 const todoId = e.target.dataset['id'];
                 fetch('todos/' + todoId + '/delete-todo', {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    method: 'DELETE'
                 })
             }
         }
