@@ -89,12 +89,18 @@ def delete_todo(todo_id):
 
 
 #index looks for this default path
-@app.route('/')
+@app.route('/lists/<list_id>')
 
-def index(): 
+def get_list_todos(list_id): 
+
     #By default, Flask looks for templates in project directory called "templates"
-    return render_template('index.html', data = Todo.query.order_by('id').all())
+    return render_template('index.html', data = Todo.query.filter_by(list_id=list_id).order_by('id').all())
     # Instead of data returned manually, use the Todo object to query the data
     # data=[{'description': 'Todo 1'}, {'description': 'Todo 2'}, {'description': 'Todo 3'}, {'description': 'Todo 4'}])
+
+@app.route('/')
+def index():
+    return redirect(url_for('get_list_todos', list_id=1))
+
 if __name__ == '__main__':
     app.run(host="localhost", port=3000, debug=True)
